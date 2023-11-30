@@ -70,12 +70,32 @@ def api_debug():
   log('done')
 
 
+def _show_map(planets):
+  WIDTH, HEIGHT = 20, 20
+  BORDER = '#'
+
+  # place planets in grid
+  grid = [['.' for x in range(WIDTH)] for y in range(HEIGHT)]
+  for p in planets:
+    x, y = p['x'], p['y']
+    grid[y][x] = p['name'][0]
+  grid.insert(0, BORDER * WIDTH)
+  grid.append(BORDER * WIDTH)
+
+  # convert grid to printable string
+  out = ''
+  for row in grid:
+    out += BORDER + (''.join(row)) + BORDER + '\n'
+  return out
+
+
 def _show_game(me, game):
   print('--- STATE:', game['state'], f'({me})')
   print('--- Clients: -----------')
   print('\n'.join(['- ' + c for c in game['clients']]))
   print('--- Planets: -----------')
-  print('\n'.join(['- ' + p for p in game['planets']]))
+  print(_show_map(game['planets']))
+  print('\n'.join(['- ' + f'{p["name"]} {p["owner"]} {p["ships"]} +{p["production"]} {p["x"]},{p["y"]}' for p in game['planets']]))
   print('--- Turns: -----------')
   print('\n'.join(['- ' + t for t in game['fleets']]))
   
